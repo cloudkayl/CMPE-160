@@ -1,0 +1,104 @@
+/**
+ * This class is a class used by class Kmap2. 
+ * This class creates var2 objects that have two instance variables - boolean a and boolean b.
+ * @
+ */
+public class Var2{
+
+    boolean a,b;
+    /**
+     * This is the default constructor for creating Var2 objects
+     */
+    public Var2(){
+        a = false;
+        b = false;
+    }
+    
+    /**
+     * This is a constructor that sets a and b to boolean values of the programmers choice
+     * @param boolean a:the boolean value of a.
+     * @param boolean b:the boolean value of b.
+     */
+    public Var2(boolean a,boolean b){
+        this.a = a;
+        this.b = b;
+    }
+    
+    public String toString(){
+        String s = a+" "+b;
+        return s;
+    }
+    
+    /**
+     *This method takes a string that is either AB, A'B', A'B, AB' and sets the values of the Var2 current object to true if " ' " is present and false otherwise.
+     *The method is a modifier
+     *@param String s: a fragment of the input given by the user to set the values of the current Var2 object
+     *@return : void
+     */
+    public void setVal(String s){
+        if(s.equals("AB")){
+            a = false;
+            b = false;
+        }
+        if(s.equals("A'B")){
+            a = true;
+            b = false;
+        }
+        if(s.equals("AB'")){
+            a = false;
+            b = true;
+        }
+        if(s.equals("A'B'")){
+            a = true;
+            b = true;
+        }
+    }
+    
+    /**
+     * This method takes two int values which are the positions of A and B on the Kmap and boolean value indicating whether it is SOP or POS and evaluates it into an integer that is either 1 or 0.
+     * @param int posA: the position of A on the Kmap
+     * @param int posB: the position of B on the Kmap
+     * @param boolean isSop: a boolean value indicating whether the expression is SOP or POS.
+     * @retrun: int
+     */
+    public int intVal(int posA,int posB,boolean isSop){
+        if(isSop){
+            if(posA == 0 && posB == 0){
+                if(a == true && b == true)return 1;
+                return 0;
+            }
+            if(posA == 1 && posB == 1){
+                if(a == false && b == false)return 1;
+                return 0;
+            }
+            if(posA == 0 && posB == 1){
+                if(a == true && b == false)return 1;
+                return 0;
+            }
+            if(posA == 1 && posB == 0){
+                if(a == false && b == true)return 1;
+                return 0;
+            }
+        }
+        else{
+            if(posA == 0 && posB == 0){
+                 if(a == false && b == false)return 0;
+                 return 1;
+                }
+            if(posA == 1 && posB == 1){
+                if(a == true && b == true)return 0;
+                return 1;
+            }
+            if(posA == 0 && posB == 1){
+                 if(a == false && b == true)return 0;
+                 return 1;
+                }
+            if(posA == 1 && posB == 0){
+                if(a == true && b == false)return 0;
+                return 1;
+            }
+        }
+        return 0;
+    }
+}
+

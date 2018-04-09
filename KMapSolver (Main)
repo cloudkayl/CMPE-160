@@ -1,0 +1,47 @@
+/**
+ * The Karnaugh map, also known as the K-map, is a method to simplify boolean algebra expressions. 
+ * The required boolean results are transferred from a truth table onto a two-dimensional grid where the cells are ordered in Gray code,
+ * and each cell position represents one combination of input conditions, while each cell value represents the corresponding output value.
+ * Optimal groups of 1s or 0s are identified, which represent the terms of a canonical form of the logic in the original truth table. 
+ * These terms can be used to write a minimal boolean expression representing the required logic.
+ */
+import java.io.*;
+/**
+ * This is the main method from which all the other methods in other classes are invokes
+ */
+public class KmapSolver{
+    /**
+     * This method takes in the input from the user and produces an output.
+     */
+    public static void run()throws IOException{
+        System.out.println("WELCOME TO THE K-MAP SOLVER!!!");
+        System.out.println();
+        System.out.println("Rules:");
+        System.out.println("Enter the expression you would like to be simplified(only 2 or 3 variables).");
+        System.out.println("Make sure there are no additional signs appart from your terms like + and brackets.");
+        System.out.println("Your input should look like this regradless of whether it is a POS or and SOP expression(eg: ABC A'BC A'B'C)");
+        System.out.println("Note that your input does not need to be case sensitive");
+        System.out.println("Then enter whether the epression you have given in is SOP or POS when the computer asks you.");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("Please enter the boolean expression you would like to be simplified(check the rules for the format of entering the expression):");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        input = input.toUpperCase();
+        System.out.println("Enter the format of the expression(SOP or POS):");
+        BufferedReader br2 = new BufferedReader(new InputStreamReader(System.in));
+        String type = br2.readLine();
+        type = type.toUpperCase();
+        boolean isSop = true;
+        if(type.equals("POS"))isSop = false;
+        if(input.indexOf("C") == -1){
+            Kmap2.simplify(input,isSop);
+        }
+        else{
+            Kmap3.output(input,isSop);
+        }
+        System.out.println("");
+        System.out.println("Thank You for using this Kmap solver !");
+    }
+}
+

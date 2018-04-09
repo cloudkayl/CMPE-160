@@ -1,0 +1,84 @@
+/**
+ * This is an extended class of Var2, and performs more or less the same functions as Var2 but acts on three variables rather than two.
+ * This class has one instance variable and two hidden variables that were inherited from Var2 and they all hold boolean values.
+ */
+class Var3 extends Var2{
+    
+    boolean c;
+    
+    /**
+     * This is the default constructor that uses the contructor of the super class to set the values of a and b and then sets the value of c.
+     */
+    public Var3(){
+        super();
+        c = false;
+    }
+    
+    public String toString(){
+        String s = a+" "+b+" "+c;
+        return s;
+    }
+    
+    /**
+     * This constructor takes in three boolean values and uses the constructor of the super class to set the values of a and b and then sets the value of c.
+     * @param boolean a:the boolean value of a.
+     * @param boolean b:the boolean value of b.
+     * @param boolean c:the boolean value of c.
+     */
+    public Var3(boolean a, boolean b, boolean c){
+        super(a,b);
+        this.c = c;
+    }
+    
+    /**
+     * This method does the same task as the methos in the super class but also sets the value of the instance variable c.The method modifies the boolean value of the current Var according to the given
+     * String.
+     * @param String s: A fragment of the input given by the user, that is used to set the values a Var3 object.
+     * @return void
+     */
+    public void setVal(String s){
+        if(s.substring(s.length()-1,s.length()).equals("C")){
+            super.setVal(s.substring(0,s.length()-1));
+            c = false;
+        }
+        else{
+            super.setVal(s.substring(0,s.length()-2));
+            c = true;
+        }
+    }
+    
+    /**
+     * This method does the same task as the mthos in the super class but takes another int variable to indicate the position of c.The method returns an int value.
+     * @param int posA:postion value of a
+     * @param int posB:postion value of b
+     * @param int posC:position value of c
+     * @param boolean isSop:boolean value indicating whether the given statement is SOP or POS.
+     * @return int:the method evaluates the current object to an int(0 or 1) and then returns the value.
+     */
+    public int intVal(int posA,int posB,int posC,boolean isSop){
+        int subVal = super.intVal(posA,posB,isSop);
+        if(isSop){
+           if(posC == 0){
+               if(subVal == 1 && c == true)return 1;
+               return 0;
+           }
+           if(posC == 1){
+               if(subVal == 1 && c == false)return 1;
+               return 0;
+           }
+        }
+        else{
+            if(subVal == 1)return 1;
+            if(posC == 0){
+                if(c == true)return 1;
+                return 0;
+            }
+            else{
+                if(c == false)return 1;
+                return 0;
+            }
+        }
+        return 0;
+    }
+}
+

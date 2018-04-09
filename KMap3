@@ -1,0 +1,513 @@
+/**
+ * This class extends Kmap2 and preforms the same functions but for 3 variables instead of two.
+ */
+import java.util.*;
+public class Kmap3 extends Kmap2{
+    
+    /**
+     * this constructor implements the constructor from the super class.
+     */ 
+    public Kmap3(boolean[][]map){
+        super(map);
+    }
+    
+    /**
+     * prints the current Kmap3 object.
+     */
+    public void print(){
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map[0].length;j++){
+                if(map[i][j]){
+                    System.out.print("1"+" ");
+                }
+                else{
+                    System.out.print("0"+" ");
+                }
+            }
+            System.out.println();
+        }
+    }
+    
+    /**
+     * This method uses the method in the super class and also evaluates the same for the third variable of the given expression.
+     * @param Var3[]var:an array of Var3 objects that need to be evaluated to a single boolean value.
+     * @param boolean isSop: indicates whether the expression is boolean or not.
+     * @param int a:indicates the position of a on the Kmap.
+     * @param int b:indicates the position of b on the Kmap
+     * @param int c:indicates the position of c on the Kmap
+     * @return boolean: returns the simplified boolean expression.
+     */
+    public static boolean finalVal3(Var3[]var,boolean isSop,int a,int b,int c){
+        int result  = 0;
+        if(isSop){
+            for(int index = 0;index<var.length;index++){
+                result = result + var[index].intVal(a,b,c,true);
+            }
+            if(result>=1)return true;
+            return false;
+        }
+        else{
+            result = 1;
+            for(int index = 0;index<var.length;index++){
+                result = result*var[index].intVal(a,b,c,false);
+            }
+            if(result>=1)return true;
+            return false;
+        }
+    }
+    
+    /**
+     * This method creates a Kmap and set boolean values onto it according to the given expression.
+     * @param String input:The input given by the user.
+     * @paran boolean isSop:A boolean value that indicates whether the given expression is SOP or POS.
+     * @return Kmap3:returns a Kmap3 object with set values.
+     */
+    public static Kmap3 setMap(String input,boolean isSop){
+        String[]array = input.split(" ");
+        int size = array.length;
+        Var3[]var = new Var3[size];
+        for(int i = 0;i<var.length;i++){
+            var[i] = new Var3();
+        }
+        boolean[][]map = new boolean[4][2];
+        int m = 0;
+        while(m<size){
+            var[m].setVal(array[m]);
+            m++;
+        }
+        map[0][0] = finalVal3(var,isSop,0,0,0);
+        map[0][1] = finalVal3(var,isSop,0,0,1);
+        map[1][0] = finalVal3(var,isSop,0,1,0);
+        map[1][1] = finalVal3(var,isSop,0,1,1);
+        map[2][0] = finalVal3(var,isSop,1,1,0);
+        map[2][1] = finalVal3(var,isSop,1,1,1);
+        map[3][0] = finalVal3(var,isSop,1,0,0);
+        map[3][1] = finalVal3(var,isSop,1,0,1);
+        Kmap3 result = new Kmap3(map);
+        return result;
+    }
+    
+    /**
+     * This method converts the given positions to a String and returns it.
+     * @param int posA: position of A
+     * @param int posB: position of B
+     * @param int posC: position of C
+     * @param boolean val: boolean  value at that position
+     * @return String: The converted String that is returned
+     */
+    private static String convertString(int posA,int posB,int posC, boolean val){
+        if(posA == 0 && posB == 0 && posC == 0){
+            if(val)return "A'B'C'";
+        }
+        else if(posA == 0 && posB == 0 && posC == 1){
+            if(val)return "A'B'C";
+        }
+        else if(posA == 0 && posB == 1 && posC == 0){
+            if(val)return "A'BC'";
+        }
+        else if(posA == 0 && posB == 1 && posC == 1){
+            if(val)return "A'BC";
+        }
+        else if(posA == 1 && posB == 0 && posC == 0){
+            if(val)return "AB'C'";
+        }
+        else if(posA == 1 && posB == 0 && posC == 1){
+            if(val)return "AB'C";
+        }
+        else if(posA == 1 && posB == 1 && posC == 0){
+            if(val)return "ABC'";
+        }
+        else if(posA == 1 && posB == 1 && posC == 1){
+            if(val)return "ABC";
+        }
+        return "";
+    }
+    
+    /**
+     * This method is an alternative of the other convertString method.It takes in positions on a Kmap3 object and converts it to String.
+     * @param int a: row position.
+     * @param int b: column position.
+     * @result String: returns the conveted String.
+     */
+    private static String convertString(int a, int b){
+        if(a == 0&&b == 0)return convertString(0,0,0,true);
+        if(a == 0&&b == 1)return convertString(0,0,1,true);
+        if(a == 1&&b == 0)return convertString(0,1,0,true);
+        if(a == 1&&b == 1)return convertString(0,1,1,true);
+        if(a == 2&&b == 0)return convertString(1,1,0,true);
+        if(a == 2&&b == 1)return convertString(1,1,1,true);
+        if(a == 3&&b == 0)return convertString(1,0,0,true);
+        if(a == 3&&b == 1)return convertString(1,0,1,true);
+        return "";
+    }
+    
+    /**
+     *This method takes in 4 Strings and returns whatever is common between them.
+     *@param String a: one of the Strings to be grouped.
+     *@param String b: one of the Strings to be grouped.
+     *@param String c: one of the Strings to be grouped.
+     *@param String d: one of the Strings to be grouped.
+     *@return String: A String containing all the common elements of the 4 Strings.
+     */
+    private static String common4(String a,String b,String c,String d){
+        if(a.indexOf("A'")>-1&&b.indexOf("A'")>-1&&c.indexOf("A'")>-1&&d.indexOf("A'")>-1){
+            return "A'";
+        }
+        else if(a.indexOf("B'")>-1&&b.indexOf("B'")>-1&&c.indexOf("B'")>-1&&d.indexOf("B'")>-1){
+            return "B'";
+        }
+        else if(a.indexOf("C'")>-1&&b.indexOf("C'")>-1&&c.indexOf("C'")>-1&&d.indexOf("C'")>-1){
+            return "C'";
+        }
+        else if(a.indexOf("A'")==-1&&b.indexOf("A'")==-1&&c.indexOf("A'")==-1&&d.indexOf("A'")==-1){
+            return "A";
+        }
+        else if(a.indexOf("B'")==-1&&b.indexOf("B'")==-1&&c.indexOf("B'")==-1&&d.indexOf("B'")==-1){
+            return "B";
+        }
+        else if(a.indexOf("C'")==-1&&b.indexOf("C'")==-1&&c.indexOf("C'")==-1&&d.indexOf("C'")==-1){
+            return "C";
+        }
+        else{
+            return "";
+        }
+    }
+    
+    /**
+     * This method checks whether the given Kmap has any groups of four.
+     * @param boolean[] vals: an array of the boolean values of the Kmap.
+     * @return String: returns a String containing the grouped values.
+     */
+    private String group4(boolean[]vals){
+        String result = "";
+        if(vals[0]&&vals[1]&&vals[2]&&vals[3]){
+            result = result+" "+common4(convertString(0,0,0,true),convertString(0,0,1,true),
+                                        convertString(0,1,0,true),convertString(0,1,1,true));
+        }
+        else if(vals[2]&&vals[3]&&vals[4]&&vals[5]){
+            result = result+" "+common4(convertString(0,1,0,true),convertString(0,1,1,true),
+                                        convertString(1,0,0,true),convertString(1,0,1,true));
+        }
+        else if(vals[4]&&vals[5]&&vals[6]&&vals[7]){
+            result = result+" "+common4(convertString(1,0,0,true),convertString(1,0,1,true),
+                                        convertString(1,1,0,true),convertString(1,1,1,true));
+        }
+        else if(vals[6]&&vals[7]&&vals[0]&&vals[1]){
+            result = result+" "+common4(convertString(1,1,0,true),convertString(1,1,1,true),
+                                        convertString(0,0,0,true),convertString(0,0,1,true));
+        }
+        else if(vals[0]&&vals[2]&&vals[4]&&vals[6]){
+            result = result+" "+common4(convertString(0,0,0,true),convertString(0,1,0,true),
+                                        convertString(1,0,0,true),convertString(1,1,0,true));
+        }
+        else if(vals[1]&&vals[3]&&vals[5]&&vals[7]){
+            result = result+" "+common4(convertString(0,0,1,true),convertString(1,1,1,true),
+                                        convertString(0,1,1,true),convertString(1,0,1,true));
+        }
+        return result;
+    }
+    
+    /**
+     * This method checks for the common elements in 2 Strings.
+     * @param String a: one of the Strings to be grouped.
+     * @param String b: one of the Strings to be grouped.
+     * @return String: a String containing the common elements.
+     */
+    private static String common2(String a,String b){
+        if(a.equals(b))return a;
+        boolean aA = false;
+        boolean aB = false;
+        boolean aC = false;
+        boolean bA = false;
+        boolean bB = false;
+        boolean bC = false;
+        if(a.indexOf("A'")>-1)aA = true;
+        if(a.indexOf("B'")>-1)aB = true;
+        if(a.indexOf("C'")>-1)aC = true;
+        if(b.indexOf("A'")>-1)bA = true;
+        if(b.indexOf("B'")>-1)bB = true;
+        if(b.indexOf("C'")>-1)bC = true;
+        if(aA&&aB&&aC){
+            if(bA&&bB)return"A'B'";
+            if(bB&&bC)return"B'C'";
+            if(bA&&bC)return"A'C'";
+        }
+        else if(!aA&&!aB&&!aC){
+            if(!bA&&!bB)return"AB";
+            if(!bB&&!bC)return"BC";
+            if(!bA&&!bC)return"AC";
+        }
+        else if(aA&&aB&&!aC){
+            if(bA&&bB)return"A'B'";
+            if(bB&&!bC)return"B'C";
+            if(bA&&!bC)return"A'C";
+        }
+        else if(aA&&!aB&&aC){
+            if(bA&&!bB)return"A'B";
+            if(!bB&&bC)return"BC'";
+            if(bA&&bC)return"A'C'";
+        }
+        else if(aA&&!aB&&!aC){
+            if(bA&&!bB)return"A'B";
+            if(!bB&&!bC)return"BC";
+            if(bA&&!bC)return"A'C";
+        }
+        else if(!aA&&aB&&aC){
+            if(!bA&&bB)return"AB'";
+            if(bB&&bC)return"B'C'";
+            if(!bA&&bC)return"AC'";
+        }
+        else if(!aA&&aB&&!aC){
+            if(!bA&&bB)return"AB'";
+            if(bB&&!bC)return"B'C";
+            if(!bA&&!bC)return"AC";
+        }
+        else if(!aA&&!aB&&aC){
+            if(!bA&&!bB)return"AB";
+            if(!bB&&bC)return"BC'";
+            if(!bA&&bC)return"AC'";
+        }
+        return "";
+    }
+    
+    /**
+     * This method makes the current object false wherever there is a group of 2.
+     * @param String[]vals: String[] of all pairs.
+     * @return void.
+     */
+    public void makeFalse(String[]vals){
+        for(int i = 0;i<vals.length;i++){
+            if(vals[i]!=null){
+                if(vals[i].compareTo("AB")==0){map[2][0]=false;map[2][1]=false;}
+                else if(vals[i].compareTo("AB'")==0){map[3][0]=false;map[3][1]=false;}
+                else if(vals[i].compareTo("A'B")==0){map[1][0]=false;map[1][1]=false;}
+                else if(vals[i].compareTo("A'B'")==0){map[0][0]=false;map[0][1]=false;}
+                else if(vals[i].compareTo("AC")==0){map[2][1]=false;map[3][1]=false;}
+                else if(vals[i].compareTo("AC'")==0){map[2][0]=false;map[3][0]=false;}
+                else if(vals[i].compareTo("A'C")==0){map[0][1]=false;map[1][1]=false;}
+                else if(vals[i].compareTo("A'C'")==0){map[0][0]=false;map[1][0]=false;}
+                else if(vals[i].compareTo("BC")==0){map[1][1]=false;map[2][1]=false;}
+                else if(vals[i].compareTo("BC'")==0){map[1][0]=false;map[2][0]=false;}
+                else if(vals[i].compareTo("B'C")==0){map[3][1]=false;map[0][1]=false;}
+                else if(vals[i].compareTo("B'C'")==0){map[3][0]=false;map[0][0]=false;}
+            }
+        }
+    }
+    
+    /**
+     * This method checks for groups of two in the Kmap and takes out the redundant groups.
+     * @param void.
+     * @return String[]:returns an array of the groups. 
+     */
+    public String[] group2(){
+        String[]result = new String[25];
+        int index = 0;
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map[0].length-1;j++){
+                if(map[i][j]&&map[i][j+1]){
+                    result[index] = common2(convertString(i,j),convertString(i,j+1));
+                    index++;
+                }
+            }
+        }
+        for(int k = 0;k<2;k++){
+            for(int l = 0;l<map.length;l++){
+                if(l == map.length-1){
+                    if(map[l][k]&&map[0][k]){
+                        result[index] = common2(convertString(l,k),convertString(0,k));
+                        index++;
+                    }
+                }
+                else if(map[l][k]&&map[l+1][k]){
+                    result[index] = common2(convertString(l,k),convertString(l+1,k));
+                    index++;
+                }
+            }
+        }
+        makeFalse(result);
+        return result;
+    }
+    
+    /**
+     * This method checks for single values left in the Kmap.
+     * @param void.
+     * @return String: a String of the converted value on the Kmap.
+     */
+    private String convertSingleton(){
+        String result = null;
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map[0].length;j++){
+                if(map[i][j]){
+                    if(result==null){
+                        result = convertString(i,j);
+                    }
+                    else{
+                        result = result + "+" + convertString(i,j);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * This method checks whether it is possible to group the given Kmap into a group of 8 variables.
+     * @return String: If all the values of the Kmap are 1 it returns "1" if all are 0 it returns "0" else returns an empty String
+     */
+    private String group8(){
+        int count0 = 0;
+        int count1 = 0;
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map[0].length;j++){
+                if(map[i][j]){
+                    count1++;
+                }
+                else{
+                    count0++;
+                }
+            }
+        }
+        if(count0 == 8)return "0";
+        if(count1 == 8)return "1";
+        return "";
+    }
+    
+    /**
+     * This method groups a given Kmap and returns a String.
+     * @param Kmap3 map:The Kmap3 object that needs to be grouped.
+     * @return String: The String version of the grouped Kmap.
+     */
+    public static String group(Kmap3 map){
+        String result = "";
+        result = map.group8();
+        if(!result.equals(""))return result;
+        boolean[]vals = new boolean[8];
+        vals[0] = map.map[0][0];
+        vals[1] = map.map[0][1];
+        vals[2] = map.map[1][1];
+        vals[3] = map.map[1][0];
+        vals[4] = map.map[2][0];
+        vals[5] = map.map[2][1];
+        vals[6] = map.map[3][0];
+        vals[7] = map.map[3][1];
+        
+        String fours = map.group4(vals);
+        String[] twos = new String[25];
+        twos = map.group2();
+        String[] st = fours.split(" ");
+        for(int gh = 0;gh<st.length;gh++){
+            if(result.equals("")){
+                result = st[gh];
+            }
+            else{
+                result = result+st[gh];
+            }
+        }
+        int index = 0;
+        while(index<st.length){
+            if(st[index].equals("A")){
+                for(int i = 0;i<twos.length;i++){
+                    if(twos[i]!=null){
+                        if(twos[i].equals("AB")||twos[i].equals("AB'")||
+                                                 twos[i].equals("AC")||twos[i].equals("AC'"))twos[i] = null;
+                    }
+                }
+            }
+            if(st[index].equals("A'")){
+                for(int j = 0;j<twos.length;j++){
+                    if(twos[j]!=null){
+                        if(twos[j].equals("A'B'")||twos[j].equals("A'B")||
+                                                   twos[j].equals("A'C")||twos[j].equals("A'C'"))twos[j] = null;
+                    }
+                }
+            }
+            if(st[index].equals("B")){
+                for(int k = 0;k<twos.length;k++){
+                    if(twos[k]!=null){
+                        if(twos[k].equals("AB")||twos[k].equals("A'B")||
+                                                 twos[k].equals("BC")||twos[k].equals("BC'"))twos[k] = null;
+                    }
+                }
+            }
+            if(st[index].equals("B'")){
+                for(int l = 0;l<twos.length;l++){
+                    if(twos[l]!=null){
+                        if(twos[l].equals("AB'")||twos[l].equals("A'B'")||
+                                                 twos[l].equals("B'C")||twos[l].equals("B'C'"))twos[l] = null;
+                    }
+                }
+            }
+            if(st[index].equals("C")){
+                for(int m = 0;m<twos.length;m++){
+                    if(twos[m]!=null){
+                        if(twos[m].equals("AC")||twos[m].equals("A'C")||
+                                                 twos[m].equals("BC")||twos[m].equals("B'C"))twos[m] = null;
+                    }
+                }
+            }
+            if(st[index].equals("C'")){
+                for(int n = 0;n<twos.length;n++){
+                    if(twos[n]!=null){
+                        if(twos[n].equals("AC'")||twos[n].equals("A'C'")||
+                                                 twos[n].equals("BC'")||twos[n].equals("B'C'"))twos[n] = null;
+                    }
+                }
+            }
+            index++;
+        }
+        for(int p = 0;p<twos.length-1;p++){
+            for(int q = p+1;q<twos.length;q++){
+                if(twos[p]==null)break;
+                if(twos[q]!=null){
+                    if(twos[p].equals(twos[q]))twos[q] =null;
+                }
+            }
+        }
+        for(int z = 0;z<st.length;z++){
+            if(result.equals("")){
+                result = st[z];
+            }
+            else{
+                result = result+"+"+st[z];
+            }
+        }
+        for(int y = 0;y<twos.length;y++){
+            if(twos[y]!=null){
+                if(result.equals("")){
+                    result = twos[y];
+                }
+                else{
+                    result = result+"+"+twos[y];
+                }
+            }
+        }
+        String single = map.convertSingleton();
+        if(result.equals(""))return single;
+        if(single!=null)return result+"+"+single;
+        return result;
+    }
+    
+    /**
+     * This is the main method of the class. It takes the input from the user and places it on a Karnough Map simplifies it and
+     * groups it using helper methods setMap and group.
+     * @param String input: input from user.
+     * @param boolean isSop:A boolean value that indicates whether the given expression is SOP or POS.;
+     */
+    public static void output(String input,boolean isSop){
+        Kmap3 map = setMap(input,isSop);
+        System.out.println("This is the Kmap:");
+        System.out.println("");
+        map.print();
+        System.out.println("");
+        System.out.println("This is the simplified expression:");
+        String output = group(map);
+        //additional measure taken to make sure output is accurate
+        if(output.length()>=3){
+            if(output.charAt(1)=='+'&&output.charAt(2)=='+'){
+                output = output.substring(3,output.length());           
+            }
+        }
+        System.out.println(output);
+    }
+}
+

@@ -1,0 +1,269 @@
+
+/**
+ * This class creates a Kmap of two variables groups it and simplifies it.
+ * It has one instance variable that is a 2D boolean array.
+ */
+public class Kmap2{
+
+    boolean[][]map;
+  
+    /**
+     * This is the constructor of a Kmap2 object. It takes a given boolean 2D array and sets the map instance variable to the given boolean array.
+     * @param boolean[][]map:the given boolean 2D array.
+     */
+    public Kmap2(boolean[][]map){
+        this.map = map;
+    }
+    
+    /**
+     * prints the cuurent object.
+     */
+    public void print(){
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map.length;j++){
+                if(map[i][j]== true)System.out.print("1"+" ");
+                if(map[i][j]== false)System.out.print("0"+" ");
+            }
+            System.out.println();
+        }
+    }
+    
+    /**
+     * this method converts a given position to a String
+     * @param boolean isSop: boolean value that indicates whether the grouping should be done to simplify to a POS expression
+     *                       or and SOP expression.
+     * @param int posA: indicates the position of variable A.
+     * @param int posB: indicates the position of variable B.
+     * @param boolean val: boolean value at the given position.
+     */
+    private static String convertString(int posA, int posB, boolean val){
+        if(posA == 0 && posB == 0){
+            if(val)return"";
+            return "AB";
+        }
+        else if(posA == 0 && posB == 1){
+             if(val)return "";
+             return "AB'";
+        }
+        else if(posA == 1 && posB == 0){
+             if(val)return "";
+             return "A'B";
+        }
+        else{
+             if(val)return "";
+             return "A'B'";
+        }
+    }
+    
+    /**
+     * This method converts single variable of the Karnough map into a String.
+     * @param int posA: holds position of A
+     * @param int posB: holds position of B
+     * @return String: returns the converted String value.
+     */
+    private static String convertSingleton(int posA,int posB){
+        if(posA == 0 && posB == 0)return "A+B";
+        if(posA == 0 && posB == 1)return "A+B'";
+        if(posA == 1 && posB == 1)return "A'+B'";
+        if(posA == 1 && posB == 0)return "A'+B";
+        return"";
+    }
+    
+    /**
+     * This method groups all the single values left.
+     * @param boolean isSop:boolean value that indicates whether the grouping should be done to simplify to a POS expression
+     *                      or and SOP expression.
+     * @return String:the converted String cersion of the grouped singleton.
+     */
+    private String groupSingleton(){
+        String result ="";
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map[0].length;j++){
+                if(!map[i][j]){
+                    if(result.equals("")){
+                        result = "("+convertSingleton(i,j)+")";
+                    }
+                    else{
+                        result = result+"("+convertSingleton(i,j)+")";
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * This method takes two String objects, and returns the common variable between them.
+     * @param String a: One of the compared Strings
+     * @param String b: One of the compared Strings
+     * @return: the String containing the common varaibles between them.
+     */
+    private static String common(String a, String b){
+        if(a.equals("")||b.equals(""))return "";
+        if(a.equals(b))return a;
+        if(a.equals("AB")){
+            if(b.equals("AB'"))return "A";
+            if(b.equals("A'B"))return "B";
+            return "";
+        }
+        if(a.equals("A'B'")){
+            if(b.equals("A'B"))return "A'";
+            if(b.equals("AB'"))return "B'";
+            return "";
+        }
+        if(a.equals("AB'")){
+            if(b.equals("AB"))return "A";
+            if(b.equals("A'B'"))return "B'";
+            return "";
+        }
+        if(a.equals("A'B")){
+            if(b.equals("AB"))return "B";
+            if(b.equals("A'B'"))return "A'";
+            return "";
+        }
+        return "";
+    }
+    
+    /**
+     * This method returns a String with the groups of two in it.
+     * @param boolean isSop:boolean value that indicates whether the grouping should be done to simplify to a POS expression
+     *                      or and SOP expression.
+     * @result String: String containing the groups of two in it.
+     */
+    private String group2(){
+        String oo = convertString(0,0,map[0][0]);
+        String ol = convertString(0,1,map[0][1]);
+        String ll = convertString(1,1,map[1][1]);
+        String lo = convertString(1,0,map[1][0]);
+        String oool = common(oo,ol);
+        String oolo = common(oo,lo);
+        String olll = common(ol,ll);
+        String loll = common(lo,ll);
+        String[] group = {oool,oolo,olll,loll};
+        String result = "";
+        for(int i = 0;i<group.length;i++){
+            if(group[i].length() == 1){
+                if(result.equals("")){
+                    result = "("+group[i]+")";
+                }
+                else{
+                    result = result+"("+group[i]+")";
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * this is an object method that checks whether the Kmap can be grouped in 4's, and returns a blank String if it does not.
+     * @param boolean isSop: boolean value that indicates whether the grouping should be done to simplify to a POS expression
+     *                       or and SOP expression.
+     * @return String: returns a String that is either a blank or 1 or 0;
+     */
+    private String group4(){
+        int count1 = 0;
+        int count0 = 0;
+        for(int i = 0;i<map.length;i++){
+            for(int j = 0;j<map.length;j++){
+                if(map[i][j]){
+                    count1++;
+                }
+                else{
+                    count0++;
+                }
+            }
+        }
+        if(count0 == 4)return "0";
+        if(count1 == 4)return "1";
+        return "";
+    }
+    
+    /**
+     * This method groups the Kmap and returns the simplified POS or SOP expression in the form of a String.
+     * @param Kmap2 map: the Kmap that needs to be simplified.
+     * @param boolean isSop:boolean value that indicates whether the grouping should be done to simplify to a POS expression
+     *                      or and SOP expression.
+     * @return String: the final simplified expression.
+     */
+    private static String group(Kmap2 map){
+        String result = "";
+        result = map.group4();
+        if(result.equals("0")||result.equals("1"))return result;
+        result = map.group2();
+        if(result.equals("") == false)return result;
+        result = map.groupSingleton();
+        return result;
+    }
+    
+    /**
+     * This method simplifies an array of Var2 objects to a single boolean value.
+     * @param Var2[] var: an array of Var2 objects that need to be simplified.
+     * @param boolean isSop: a boolean value that indicates whether the expression is SOP or POS
+     * @param int posA: indicates the position of a on the Kmap. 
+     * @param int posB: indicates the position of b on the Kmap.
+     * @param return: the simplified boolean value of the given Var2 array.
+     */
+    private static boolean finalVal2(Var2[]var,boolean isSop,int posA,int posB){
+        int result = 0;
+        if(isSop){            
+           for(int ind = 0;ind<var.length;ind++){
+              result = result + var[ind].intVal(posA,posB,true);
+           }
+           if(result>=1)return true;
+           return false;
+        }
+        else{
+            result = 1;
+            for(int ind = 0;ind<var.length;ind++){
+                result = result * var[ind].intVal(posA,posB,false);
+            } 
+            if(result >= 1)return true;
+            return false;
+        }
+    }
+    
+    /**
+     * This method takes the input of the user and sets boolean values a the Kmap2 object.
+     * @param String input:The input of the user that contains the epression that needs to be simplified.
+     * @param boolean isSop:A boolean value that indicates whether the given expression is SOP or POS.
+     * @return Kmap2: the method returns a Kmap with boolean values set by the method according to the given expression.
+     */
+    public static Kmap2 setMap(String input,boolean isSop){
+        String[]array = input.split(" ");
+        int size  = array.length;
+        Var2[]var = new Var2[size];
+        for(int i = 0;i<var.length;i++){
+            var[i] = new Var2();
+        }
+        boolean[][]map = new boolean[2][2];
+        int m = 0;
+        while(m<size){
+            var[m].setVal(array[m]);
+            m++;
+        }
+        for(int i = 0;i<2;i++){
+             for(int j = 0;j<2;j++){
+                map[i][j] = finalVal2(var,isSop,i,j);
+            }
+        }
+        Kmap2 result = new Kmap2(map);
+        System.out.println("This is the Kmap:");
+        System.out.println("");
+        result.print();
+        System.out.println("");
+        return result;
+    }
+    
+    /**
+     * This is the main method of the class. It takes the input from the user and places it on a Karnough Map simplifies it and
+     * groups it using helper methods setMap and group.
+     * @param String input: input from user.
+     * @param boolean isSop:A boolean value that indicates whether the given expression is SOP or POS.;
+     */
+    public static void simplify(String input, boolean isSop){
+        Kmap2 map = setMap(input,isSop);
+        String Pos = group(map);
+        System.out.println("This is the simplified expression:"+" "+Pos);
+    }
+}
+
